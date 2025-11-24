@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tables-${{ matrix.os }}
-          path: .
+          path: tables/
           retention-days: 1
           if-no-files-found: error
 
@@ -75,8 +75,8 @@ jobs:
       - name: Merge changes from all platforms
         run: |
           for os in ubuntu-latest macos-latest windows-latest; do
-            if [ -d "artifacts/tables-$os" ]; then
-              rsync -av --exclude='.git' artifacts/tables-$os/ ./ || true
+            if [ -d "artifacts/tables-$os/tables" ]; then
+              rsync -av artifacts/tables-$os/tables/ ./tables/ || true
             fi
           done
 
@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: check-${{ matrix.os }}
-          path: .
+          path: tables/
           retention-days: 1
           if-no-files-found: error
 
@@ -137,8 +137,8 @@ jobs:
       - name: Merge changes from all platforms
         run: |
           for os in ubuntu-latest macos-latest windows-latest; do
-            if [ -d "artifacts/check-$os" ]; then
-              rsync -av --exclude='.git' artifacts/check-$os/ ./ || true
+            if [ -d "artifacts/check-$os/tables" ]; then
+              rsync -av artifacts/check-$os/tables/ ./tables/ || true
             fi
           done
 
