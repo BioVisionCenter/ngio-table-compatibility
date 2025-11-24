@@ -1,0 +1,52 @@
+[workspace]
+authors = ["lorenzo <lorenzo.cerrone@uzh.ch>"]
+channels = ["conda-forge"]
+name = "ngio-table-compatibility"
+platforms = ["osx-arm64", "linux-64", "win-64"]
+version = "0.1.0"
+
+# Base Python dependencies
+[feature.py13.dependencies]
+python = "==3.13"
+notebook = "*"
+
+# Fractal Task Core
+[feature.fractal-tasks-core.pypi-dependencies]
+fractal-tasks-core = ">=1.5.0,<2.0.0"
+
+# Ngio 0.4 Environment
+[feature.ngio04.pypi-dependencies]
+ngio = ">=0.4,<0.5"
+
+[feature.ngio04.tasks]
+ngio04_create = "python scripts/ngio04.py --dir ./tables --mode create"
+ngio04_check = "python scripts/ngio04.py --dir ./tables --mode check"
+
+# Ngio 0.5 Environment
+[feature.ngio05.pypi-dependencies]
+ngio = "==0.5.0a1"
+# Debugging with local version of ngio
+# ngio = { path = "../ngio", editable = true }
+
+[feature.ngio05.tasks]
+ngio05_create = "python scripts/ngio05.py --dir ./tables --mode create"
+ngio05_check = "python scripts/ngio05.py --dir ./tables --mode check"
+
+# Environment definitions
+[environments]
+# Dev environments
+default = ["py13"]
+task-core = ["py13", "fractal-tasks-core"]
+ngio04 = ["py13", "ngio04"]
+ngio05 = ["py13", "ngio05"]
+
+[tasks]
+create-tables = [
+    { task = "ngio04_create", env = "ngio04" },
+    { task = "ngio05_create", env = "ngio05" },
+]
+
+check-tables = [
+    { task = "ngio04_check", env = "ngio04" },
+    { task = "ngio05_check", env = "ngio05" },
+]
