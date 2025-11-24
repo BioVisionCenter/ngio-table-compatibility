@@ -118,15 +118,57 @@ jobs:
           git commit -m "CI: auto-commit changes"
           git push
 
-  create-pull-request:
-    name: Create Pull Request
-    needs: [check-tables-ubuntu]
-    runs-on: ubuntu-latest
+  check-tables-macos:
+    name: Check Tables - macOS
+    needs: check-tables-ubuntu
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v5
         with:
           ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+      - run: pixi run check-tables
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "CI: auto-commit changes"
+          git push
+  check-tables-windows:
+    name: Check Tables - windows-latest
+    needs: check-tables-macos
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+      - run: pixi run check-tables
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "CI: auto-commit changes"
+          git push
+
+  create-pull-request:
+    name: Create Pull Request
+    needs: [check-tables-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
