@@ -35,15 +35,15 @@
       1.5,
       2.2
     ],
-    "y_micrometer_origin": [
-      1.3,
-      -2.3,
-      -3.3
-    ],
-    "x_micrometer_origin": [
+    "x_micrometer_original": [
       -1.0,
       -2.5,
       -3.2
+    ],
+    "y_micrometer_original": [
+      1.3,
+      -2.3,
+      -3.3
     ]
   },
   "zarr_format": 3,

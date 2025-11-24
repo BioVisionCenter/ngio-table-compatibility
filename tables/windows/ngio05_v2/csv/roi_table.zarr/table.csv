@@ -1,4 +1,4 @@
-FieldIndex,x_micrometer,y_micrometer,z_micrometer,len_x_micrometer,len_y_micrometer,len_z_micrometer,y_micrometer_origin,x_micrometer_origin
-FOV1,10.0,15.0,5.0,2.0,2.5,1.0,1.3,-1.0
-FOV2,20.5,25.5,10.5,3.5,3.0,1.5,-2.3,-2.5
-FOV3,30.2,35.2,15.2,4.2,4.5,2.2,-3.3,-3.2
+FieldIndex,x_micrometer,y_micrometer,z_micrometer,len_x_micrometer,len_y_micrometer,len_z_micrometer,x_micrometer_original,y_micrometer_original
+FOV1,10.0,15.0,5.0,2.0,2.5,1.0,-1.0,1.3
+FOV2,20.5,25.5,10.5,3.5,3.0,1.5,-2.5,-2.3
+FOV3,30.2,35.2,15.2,4.2,4.5,2.2,-3.2,-3.3
