@@ -1,11 +1,9 @@
 from ngio_common import ngio_table_create, ngio_table_validate
-from common import parse_args
-import os
+from common import parse_args, CURRENT_OS
 from pathlib import Path
 
 
 if __name__ == "__main__":
-    CURRENT_OS = os.uname().sysname.lower()
     CURRENT_LIB = Path(__file__).stem
     args = parse_args()
     if args.mode == "create":

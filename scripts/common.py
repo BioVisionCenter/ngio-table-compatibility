@@ -3,6 +3,9 @@ import pandas as pd
 from pydantic import BaseModel
 from pathlib import Path
 from argparse import ArgumentParser
+import platform
+
+CURRENT_OS = platform.system().lower()
 
 def parse_args():
     parser = ArgumentParser(description="Create sample NGIO tables.")
