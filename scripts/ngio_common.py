@@ -115,7 +115,7 @@ def check_sample_masking_roi_table(file_dir: Path, current_os: str, current_lib:
     )
 
 def ngio_table_create(args, zarr_format: int, current_os: str, current_lib):
-    base = Path(args.dir)
+    base = Path(args.dir).absolute()
     base.mkdir(parents=True, exist_ok=True)
     for backend in ["anndata", "json", "csv", "parquet"]:
         table_dir = base / f"{current_os}" / f"{current_lib}" / f"{backend}"
@@ -124,7 +124,7 @@ def ngio_table_create(args, zarr_format: int, current_os: str, current_lib):
         create_sample_roi_table(table_dir, backend, zarr_format=zarr_format)
         
 def ngio_table_validate(args, current_os: str, current_lib: str):
-    root = Path(args.dir)
+    root = Path(args.dir).absolute()
     base = root.glob("*/*")
     results = []
     for base_pp in base:
