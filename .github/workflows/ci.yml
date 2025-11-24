@@ -62,7 +62,7 @@ jobs:
           command: |
             git pull
             git add -A
-            git commit -m "Auto-create NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
+            git commit -m "Auto-create NGIO tables on ${{ matrix.os }}"
             git push
 
   check-tables:
@@ -89,7 +89,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull
           git add -A
-          git commit -m "Auto-check NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
+          git commit -m "Auto-check NGIO tables on ${{ matrix.os }}"
           git push
 
   finalize-and-pr:
