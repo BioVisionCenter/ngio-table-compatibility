@@ -134,4 +134,4 @@ def ngio_table_validate(args, current_os: str, current_lib: str):
                 current_result = testing_function(dir_path, current_os=current_os, current_lib=current_lib)
                 results.append(current_result)
     
-    save_results_to_csv(results=results, output_path=root / "check_results.csv")
+    save_results_to_csv(results=results, output_path=root / f"{current_os}_check_results.csv")
