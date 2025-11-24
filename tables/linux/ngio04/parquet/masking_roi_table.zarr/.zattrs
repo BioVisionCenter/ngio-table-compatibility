@@ -1,8 +1,0 @@
-{
-    "backend": "parquet",
-    "index_key": "label",
-    "index_type": "int",
-    "instance_key": "label",
-    "table_version": "1",
-    "type": "masking_roi_table"
-}
