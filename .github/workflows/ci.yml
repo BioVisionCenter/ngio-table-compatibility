@@ -25,18 +25,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          NEW_BRANCH="auto/update-tables-${{ github.ref }}"
+          NEW_BRANCH="auto/update-tables-${{ github.run_id }}"
           git checkout -b $NEW_BRANCH
           git push --set-upstream origin $NEW_BRANCH
 
-  create-tables:
+  create-tables-ubuntu:
+    needs: create-new-branch
     name: Create Tables - Ubuntu
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: auto/update-tables-${{ github.ref }}
+          ref: auto/update-tables-${{ github.run_id }}
 
       - uses: prefix-dev/setup-pixi@v0.9.3
         with:
@@ -54,16 +55,67 @@ jobs:
           else
             echo "No changes to commit"
           fi
+  create-tables-macos:
+    needs: create-tables-ubuntu
+    name: Create Tables - macOS
+    runs-on: macos-latest
 
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+      - run: pixi run create-tables
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "CI: auto-commit changes"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+  create-tables-windows:
+    needs: create-tables-macos
+    name: Create Tables - windows-latest
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+      - run: pixi run create-tables
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "CI: auto-commit changes"
+            git push
+          else
+            echo "No changes to commit"
+          fi
   check-tables-ubuntu:
     name: Check Tables - ubuntu-latest
-    needs: create-tables
+    needs: create-tables-windows
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: auto/update-tables-${{ github.ref }}
+          ref: auto/update-tables-${{ github.run_id }}
 
       - uses: prefix-dev/setup-pixi@v0.9.3
         with:
@@ -81,3 +133,21 @@ jobs:
           else
             echo "No changes to commit"
           fi
+
+  create-pull-request:
+    name: Create Pull Request
+    needs: [check-tables-ubuntu]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto/update-tables-${{ github.run_id }}
+          title: "Auto-update NGIO tables"
+          body: "This PR was automatically created to update the NGIO tables."
