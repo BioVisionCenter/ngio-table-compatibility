@@ -65,7 +65,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v6
@@ -86,9 +86,33 @@ jobs:
           git commit -m "Auto-check NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
           git push
 
+  check-tables-macos:
+    name: Check Tables
+    needs: create-tables
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+
+      - run: pixi run check-tables
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add -A
+          git commit -m "Auto-check NGIO tables macOS" || echo "No changes to commit"
+          git push
+
   finalize-and-pr:
     name: Finalize and Create PR
-    needs: [check-tables]
+    needs: [check-tables, check-tables-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
