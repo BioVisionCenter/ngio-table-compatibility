@@ -120,11 +120,14 @@ jobs:
     needs: check-tables
     name: Commit Check Tables Changes
     runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check_changes.outputs.has_changes }}
 
     steps:
       - uses: actions/checkout@v5
         with:
           ref: auto/update-tables-${{ github.run_id }}
+          fetch-depth: 0
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -139,26 +142,64 @@ jobs:
             fi
           done
 
-      - name: Commit changes
+      - name: Check for changes
+        id: check_changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet || git commit -m "CI: auto-commit check-tables changes"
-          git push
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            git commit -m "CI: auto-commit check-tables changes"
+            git push
+          fi
+
+      - name: Check overall changes from main
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          if git diff --quiet origin/main; then
+            echo "No changes from main branch"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes exist from main branch"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
 
   create-pull-request:
     name: Create Pull Request
     needs: [commit-check-tables]
     runs-on: ubuntu-latest
+    if: needs.commit-check-tables.outputs.has_changes == 'true'
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head auto/update-tables-${{ github.run_id }} \
+            --title "Auto-update NGIO tables" \
+            --body "This PR was automatically created to update the NGIO tables."
+
+  cleanup-branch:
+    name: Cleanup Branch
+    needs: [commit-check-tables]
+    runs-on: ubuntu-latest
+    if: always() && needs.commit-check-tables.outputs.has_changes == 'false'
 
     steps:
       - uses: actions/checkout@v5
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: auto/update-tables-${{ github.run_id }}
-          title: "Auto-update NGIO tables"
-          body: "This PR was automatically created to update the NGIO tables."
+      - name: Delete branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin --delete auto/update-tables-${{ github.run_id }} || true
