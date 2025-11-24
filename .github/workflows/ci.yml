@@ -85,14 +85,22 @@ jobs:
           git commit -m "Auto-check NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
           git push
 
-  create-pull-request:
-    name: Create Pull Request
+  finalize-and-pr:
+    name: Finalize and Create PR
     needs: [check-tables]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
         with:
           ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+
+      - name: Update README
+        run: pixi run update-readme
 
       - name: Create Pull Request
         env:

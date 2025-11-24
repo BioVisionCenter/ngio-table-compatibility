@@ -31,6 +31,7 @@ ngio = "==0.5.0a1"
 [feature.ngio05.tasks]
 ngio05_create = "python scripts/ngio05.py --dir ./tables --mode create"
 ngio05_check = "python scripts/ngio05.py --dir ./tables --mode check"
+update-readme = "python scripts/build_compatibility_table.py"
 
 # Environment definitions
 [environments]
