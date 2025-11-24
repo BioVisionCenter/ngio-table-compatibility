@@ -1,0 +1,11 @@
+{
+  "backend": "json",
+  "index_key": "label",
+  "index_type": "int",
+  "table_version": "1",
+  "type": "feature_table",
+  "instance_key": "label",
+  "categorical_columns": [],
+  "measurement_columns": [],
+  "metadata_columns": []
+}
