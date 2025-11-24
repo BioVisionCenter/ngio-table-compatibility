@@ -50,14 +50,20 @@ jobs:
 
       - run: pixi run create-tables
 
-      - name: Commit and push tables
-        run: |
+      - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
-          git add -A
-          git commit -m "Auto-create NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
-          git push
+
+      - name: Commit and push tables
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 1
+          max_attempts: 3
+          command: |
+            git pull
+            git add -A
+            git commit -m "Auto-create NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
+            git push
 
   check-tables:
     name: Check Tables - ${{ matrix.os }}
