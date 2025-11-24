@@ -49,12 +49,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m "CI: auto-commit changes"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "CI: auto-commit changes"
+          git push
   create-tables-macos:
     needs: create-tables-ubuntu
     name: Create Tables - macOS
@@ -75,12 +71,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m "CI: auto-commit changes"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "CI: auto-commit changes"
+          git push
   create-tables-windows:
     needs: create-tables-macos
     name: Create Tables - windows-latest
@@ -101,12 +93,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m "CI: auto-commit changes"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "CI: auto-commit changes"
+          git push
   check-tables-ubuntu:
     name: Check Tables - ubuntu-latest
     needs: create-tables-windows
@@ -127,12 +115,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m "CI: auto-commit changes"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "CI: auto-commit changes"
+          git push
 
   create-pull-request:
     name: Create Pull Request
