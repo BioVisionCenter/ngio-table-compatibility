@@ -29,9 +29,37 @@ jobs:
           git checkout -b $NEW_BRANCH
           git push --set-upstream origin $NEW_BRANCH
 
-  create-tables-ubuntu:
+  create-tables:
     needs: create-new-branch
-    name: Create Tables - Ubuntu
+    name: Create Tables - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+
+      - run: pixi run create-tables
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tables-${{ matrix.os }}
+          path: .
+          retention-days: 1
+          if-no-files-found: error
+
+  commit-create-tables:
+    needs: create-tables
+    name: Commit Create Tables Changes
     runs-on: ubuntu-latest
 
     steps:
@@ -39,22 +67,34 @@ jobs:
         with:
           ref: auto/update-tables-${{ github.run_id }}
 
-      - uses: prefix-dev/setup-pixi@v0.9.3
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
-          pixi-version: v0.59.0
-          cache: false
-      - run: pixi run create-tables
+          path: artifacts
+
+      - name: Merge changes from all platforms
+        run: |
+          for os in ubuntu-latest macos-latest windows-latest; do
+            if [ -d "artifacts/tables-$os" ]; then
+              rsync -av --exclude='.git' artifacts/tables-$os/ ./ || true
+            fi
+          done
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "CI: auto-commit changes"
+          git diff --staged --quiet || git commit -m "CI: auto-commit create-tables changes"
           git push
-  create-tables-macos:
-    needs: create-tables-ubuntu
-    name: Create Tables - macOS
-    runs-on: macos-latest
+
+  check-tables:
+    name: Check Tables - ${{ matrix.os }}
+    needs: commit-create-tables
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v5
@@ -65,39 +105,20 @@ jobs:
         with:
           pixi-version: v0.59.0
           cache: false
-      - run: pixi run create-tables
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "CI: auto-commit changes"
-          git push
-  create-tables-windows:
-    needs: create-tables-macos
-    name: Create Tables - windows-latest
-    runs-on: windows-latest
 
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: auto/update-tables-${{ github.run_id }}
+      - run: pixi run check-tables
 
-      - uses: prefix-dev/setup-pixi@v0.9.3
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          pixi-version: v0.59.0
-          cache: false
-      - run: pixi run create-tables
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "CI: auto-commit changes"
-          git push
-  check-tables-ubuntu:
-    name: Check Tables - ubuntu-latest
-    needs: create-tables-windows
+          name: check-${{ matrix.os }}
+          path: .
+          retention-days: 1
+          if-no-files-found: error
+
+  commit-check-tables:
+    needs: check-tables
+    name: Commit Check Tables Changes
     runs-on: ubuntu-latest
 
     steps:
@@ -105,66 +126,30 @@ jobs:
         with:
           ref: auto/update-tables-${{ github.run_id }}
 
-      - uses: prefix-dev/setup-pixi@v0.9.3
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
-          pixi-version: v0.59.0
-          cache: false
-      - run: pixi run check-tables
+          path: artifacts
+
+      - name: Merge changes from all platforms
+        run: |
+          for os in ubuntu-latest macos-latest windows-latest; do
+            if [ -d "artifacts/check-$os" ]; then
+              rsync -av --exclude='.git' artifacts/check-$os/ ./ || true
+            fi
+          done
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "CI: auto-commit changes"
-          git push
-
-  check-tables-macos:
-    name: Check Tables - macOS
-    needs: check-tables-ubuntu
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: auto/update-tables-${{ github.run_id }}
-
-      - uses: prefix-dev/setup-pixi@v0.9.3
-        with:
-          pixi-version: v0.59.0
-          cache: false
-      - run: pixi run check-tables
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "CI: auto-commit changes"
-          git push
-  check-tables-windows:
-    name: Check Tables - windows-latest
-    needs: check-tables-macos
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: auto/update-tables-${{ github.run_id }}
-
-      - uses: prefix-dev/setup-pixi@v0.9.3
-        with:
-          pixi-version: v0.59.0
-          cache: false
-      - run: pixi run check-tables
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "CI: auto-commit changes"
+          git diff --staged --quiet || git commit -m "CI: auto-commit check-tables changes"
           git push
 
   create-pull-request:
     name: Create Pull Request
-    needs: [check-tables-windows]
+    needs: [commit-check-tables]
     runs-on: ubuntu-latest
 
     steps:
