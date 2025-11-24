@@ -40,8 +40,8 @@ SAMPLE_ROI_TABLE_DF = pd.DataFrame({
     "len_x_micrometer": [2.0, 3.5, 4.2],
     "len_y_micrometer": [2.5, 3.0, 4.5],
     "len_z_micrometer": [1.0, 1.5, 2.2],
-    "x_micrometer_origin": [-1.0, -2.5, -3.2],
-    "y_micrometer_origin": [1.3, -2.3, -3.3],
+    "x_micrometer_original": [-1.0, -2.5, -3.2],
+    "y_micrometer_original": [1.3, -2.3, -3.3],
 })
 SAMPLE_ROI_TABLE_DF.set_index("FieldIndex", inplace=True)
 
