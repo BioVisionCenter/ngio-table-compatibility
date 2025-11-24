@@ -1,0 +1,21 @@
+{
+  "attributes": {
+    "label": [
+      1,
+      2,
+      3
+    ],
+    "mean_intensity": [
+      100.0,
+      150.5,
+      200.2
+    ],
+    "area": [
+      50,
+      75,
+      100
+    ]
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}
