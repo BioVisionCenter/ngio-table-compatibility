@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - dev
   pull_request:
   workflow_dispatch:
   schedule:
@@ -65,7 +65,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v6
@@ -86,9 +86,33 @@ jobs:
           git commit -m "Auto-check NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
           git push
 
+  check-tables-macos:
+    name: Check Tables
+    needs: check-tables
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: auto/update-tables-${{ github.run_id }}
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          cache: false
+
+      - run: pixi run check-tables
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add -A
+          git commit -m "Auto-check NGIO tables macOS" || echo "No changes to commit"
+          git push
+
   finalize-and-pr:
     name: Finalize and Create PR
-    needs: [check-tables]
+    needs: [check-tables, check-tables-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -112,3 +136,24 @@ jobs:
             --head auto/update-tables-${{ github.run_id }} \
             --title "Auto-update NGIO tables" \
             --body "This PR was automatically created to update the NGIO tables."
+
+  cleanup-on-failure:
+    name: Cleanup Branch on Failure
+    needs:
+      [
+        create-new-branch,
+        create-tables,
+        check-tables,
+        check-tables-macos,
+        finalize-and-pr,
+      ]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Delete branch on failure
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin --delete auto/update-tables-${{ github.run_id }} || echo "Branch already deleted or does not exist"
