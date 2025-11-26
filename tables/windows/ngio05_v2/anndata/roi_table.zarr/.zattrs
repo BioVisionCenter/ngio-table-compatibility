@@ -1,9 +1,9 @@
 {
+  "encoding-type": "anndata",
+  "encoding-version": "0.1.0",
   "backend": "anndata",
   "index_key": "FieldIndex",
   "index_type": "str",
   "table_version": "1",
-  "type": "roi_table",
-  "encoding-type": "anndata",
-  "encoding-version": "0.1.0"
+  "type": "roi_table"
 }

@@ -1,10 +1,10 @@
 {
+  "encoding-type": "anndata",
+  "encoding-version": "0.1.0",
   "backend": "anndata",
   "index_key": "label",
   "index_type": "int",
   "table_version": "1",
   "type": "masking_roi_table",
-  "instance_key": "label",
-  "encoding-type": "anndata",
-  "encoding-version": "0.1.0"
+  "instance_key": "label"
 }
