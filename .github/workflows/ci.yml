@@ -29,6 +29,12 @@ jobs:
           git checkout -b $NEW_BRANCH
           git push --set-upstream origin $NEW_BRANCH
 
+      - name: Remove all csv files
+        run: |
+          git rm -f --ignore-unmatch tables/*.csv
+          git commit -m "[skip ci] Remove existing CSV tables" || echo "No CSV files to remove"
+          git push
+
   create-tables:
     needs: create-new-branch
     name: Create Tables - ${{ matrix.os }}
