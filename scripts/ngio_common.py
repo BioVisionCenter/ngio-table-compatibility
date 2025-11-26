@@ -1,6 +1,6 @@
 from ngio.tables._tables_container import write_table, open_table
 from ngio.tables.v1._roi_table import _dataframe_to_rois
-from ngio.tables import FeatureTable, RoiTable, MaskingRoiTable, ConditionTable
+from ngio.tables import FeatureTable, RoiTable, MaskingRoiTable
 from pathlib import Path
 from common import SAMPLE_FEATURE_TABLE_DF, compare_dataframes, TableCheckResult, save_results_to_csv, SAMPLE_MASKING_ROI_TABLE_DF, SAMPLE_ROI_TABLE_DF
 import zarr

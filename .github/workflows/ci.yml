@@ -6,8 +6,8 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    # Run every 15 minutes
-    - cron: "*/15 * * * *"
+    # Run every week
+    - cron: "0 0 * * 0"
 
 # cancel in-progress runs that use the same workflow and branch
 concurrency:
