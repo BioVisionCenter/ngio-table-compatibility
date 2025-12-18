@@ -5,9 +5,9 @@ on:
     branches:
       - main
   workflow_dispatch:
-  schedule:
-    # Run every week
-    - cron: "0 0 * * 0"
+  #schedule:
+  #  # Run every week
+  #  - cron: "0 0 * * 0"
 
 # cancel in-progress runs that use the same workflow and branch
 concurrency:
