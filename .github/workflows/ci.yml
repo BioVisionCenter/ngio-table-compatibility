@@ -115,7 +115,7 @@ jobs:
   cleanup-on-failure:
     name: Cleanup Branch on Failure
     needs: [create-new-branch, create-tables, check-tables, finalize-and-pr]
-    if: failure()
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
