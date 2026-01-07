@@ -48,7 +48,9 @@ def check_table(dir_path: Path,
     table_os, table_lib, table_backend = dir_path.as_posix().split("/")[-3:]
     file_path = dir_path / f"{table_name}.zarr"
     try:
-        table = open_table(store=file_path).dataframe
+        table = open_table(store=file_path)
+        assert table.table_type() == table_type
+        table = table.dataframe
     except Exception as e:
         return TableCheckResult(
             reader=current_lib,
