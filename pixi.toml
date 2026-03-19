@@ -34,6 +34,8 @@ ngio04 = ["py13", "ngio04"]
 ngio05 = ["py13", "ngio05"]
 
 [tasks]
+check-success-ratio = "python scripts/check_success_ratio.py"
+
 create-tables = [
     { task = "ngio04_create", env = "ngio04" },
     { task = "ngio05_create", env = "ngio05" },

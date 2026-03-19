@@ -2,126 +2,32 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-  #schedule:
-  #  # Run every week
-  #  - cron: "0 0 * * 0"
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 0"  # every Sunday at midnight UTC
 
-# cancel in-progress runs that use the same workflow and branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  create-new-branch:
-    name: Create New Branch
+  compatibility-check:
+    name: Compatibility Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Create and push new branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          NEW_BRANCH="auto/update-tables-${{ github.run_id }}"
-          git checkout -b $NEW_BRANCH
-          git push --set-upstream origin $NEW_BRANCH
-
-      - name: Remove all csv files
-        run: |
-          git rm -f --ignore-unmatch check_results.csv
-          git commit -m "[skip ci] Remove existing CSV tables" || echo "No CSV files to remove"
-          git push
-
-  create-tables:
-    needs: create-new-branch
-    name: Create Tables
-    runs-on: "ubuntu-latest"
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: auto/update-tables-${{ github.run_id }}
+      - uses: actions/checkout@v4
 
       - uses: prefix-dev/setup-pixi@v0.9.3
         with:
           pixi-version: v0.59.0
           cache: false
 
-      - run: pixi run create-tables
+      - name: Create tables
+        run: pixi run create-tables
 
-      - name: Commit and push tables
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
-          git add -A
-          git commit -m "[skip ci] Auto-create NGIO tables" || echo "No changes to commit"
-          git push
+      - name: Check tables
+        run: pixi run check-tables
 
-  check-tables:
-    name: Check Tables
-    needs: create-tables
-    runs-on: "ubuntu-latest"
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: auto/update-tables-${{ github.run_id }}
-
-      - uses: prefix-dev/setup-pixi@v0.9.3
-        with:
-          pixi-version: v0.59.0
-          cache: false
-
-      - run: pixi run check-tables
-      - run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
-          git add -A
-          git commit -m "[skip ci] Auto-check NGIO tables" || echo "No changes to commit"
-          git push
-
-  finalize-and-pr:
-    name: Finalize and Create PR
-    needs: [check-tables]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: auto/update-tables-${{ github.run_id }}
-
-      - uses: prefix-dev/setup-pixi@v0.9.3
-        with:
-          pixi-version: v0.59.0
-          cache: false
-
-      - name: Update README
-        run: pixi run update-readme
-
-      - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr create \
-            --base main \
-            --head auto/update-tables-${{ github.run_id }} \
-            --title "Auto-update NGIO tables" \
-            --body "This PR was automatically created to update the NGIO tables."
-
-  cleanup-on-failure:
-    name: Cleanup Branch on Failure
-    needs: [create-new-branch, create-tables, check-tables, finalize-and-pr]
-    if: ${{ always() && contains(needs.*.result, 'failure') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Delete branch on failure
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git push origin --delete auto/update-tables-${{ github.run_id }} || echo "Branch already deleted or does not exist"
+      - name: Assert success ratio
+        run: pixi run check-success-ratio
