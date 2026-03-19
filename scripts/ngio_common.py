@@ -1,3 +1,4 @@
+from typing import Literal
 from ngio.tables._tables_container import write_table, open_table
 from ngio.tables.v1._roi_table import _dataframe_to_rois
 from ngio.tables import FeatureTable, RoiTable, MaskingRoiTable
@@ -43,13 +44,25 @@ def check_table(dir_path: Path,
                 current_lib: str, 
                 table_name: str, 
                 reference_df: pd.DataFrame, 
-                table_type: str) -> TableCheckResult:
+                table_type: Literal["feature_table", "roi_table", "masking_roi_table", "condition_table"]) -> TableCheckResult:
     # Read the table from the specified file path
     table_os, table_lib, table_backend = dir_path.as_posix().split("/")[-3:]
+    if table_backend not in ["anndata", "json", "csv", "parquet"]:
+        return TableCheckResult(
+            reader=current_lib,
+            reader_os=current_os,
+            writer=table_lib,
+            writer_os=table_os,
+            backend=table_backend,
+            table_type=table_type,
+            status="failure",
+            details=f"Unknown backend: {table_backend}"
+        )
     file_path = dir_path / f"{table_name}.zarr"
     try:
         table = open_table(store=file_path)
-        assert table.table_type() == table_type
+        if table.table_type() != table_type:
+            raise ValueError(f"Expected table type {table_type} but got {table.table_type()}")
         table = table.dataframe
     except Exception as e:
         return TableCheckResult(
@@ -62,7 +75,7 @@ def check_table(dir_path: Path,
             status="failure",
             details=f"Failed to read table with error: {str(e)}"
         )
-    # Comare with the sample data
+    # Compare with the sample data
     status = compare_dataframes(table, reference_df)
     if status is not None:
         return TableCheckResult(
@@ -93,7 +106,7 @@ def check_sample_feature_table(file_dir: Path, current_os: str, current_lib: str
         current_lib=current_lib,
         table_name="feature_table",
         reference_df=SAMPLE_FEATURE_TABLE_DF,
-        table_type="FeatureTable"
+        table_type="feature_table"
     )
     
 def check_sample_roi_table(file_dir: Path, current_os: str, current_lib: str) -> TableCheckResult:
@@ -103,7 +116,7 @@ def check_sample_roi_table(file_dir: Path, current_os: str, current_lib: str) ->
         current_lib=current_lib,
         table_name="roi_table",
         reference_df=SAMPLE_ROI_TABLE_DF,
-        table_type="RoiTable"
+        table_type="roi_table",
     )
 
 def check_sample_masking_roi_table(file_dir: Path, current_os: str, current_lib: str) -> TableCheckResult:
@@ -113,7 +126,7 @@ def check_sample_masking_roi_table(file_dir: Path, current_os: str, current_lib:
         current_lib=current_lib,
         table_name="masking_roi_table",
         reference_df=SAMPLE_MASKING_ROI_TABLE_DF,
-        table_type="MaskingRoiTable"
+        table_type="masking_roi_table",
     )
 
 def ngio_table_create(args, zarr_format: int, current_os: str, current_lib):

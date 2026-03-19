@@ -70,8 +70,8 @@ class TableCheckResult(BaseModel):
     reader_os: str
     writer: str
     writer_os: str
-    backend: Literal["anndata", "json", "csv", "parquet"]
-    table_type: Literal["FeatureTable", "RoiTable", "MaskingRoiTable", "ConditionTable"]
+    backend: Literal["anndata", "json", "csv", "parquet"] | str
+    table_type: Literal["feature_table", "roi_table", "masking_roi_table", "condition_table"] | str
     status: Literal["success", "failure"]
     details: str = ""
     
