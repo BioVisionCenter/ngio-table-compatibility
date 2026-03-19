@@ -31,7 +31,7 @@ jobs:
 
       - name: Remove all csv files
         run: |
-          git rm -f --ignore-unmatch tables/*.csv
+          git rm -f --ignore-unmatch check_results.csv
           git commit -m "[skip ci] Remove existing CSV tables" || echo "No CSV files to remove"
           git push
 
@@ -58,7 +58,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull
           git add -A
-          git commit -m "[skip ci] Auto-create NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
+          git commit -m "[skip ci] Auto-create NGIO tables" || echo "No changes to commit"
           git push
 
   check-tables:
@@ -82,7 +82,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull
           git add -A
-          git commit -m "[skip ci] Auto-check NGIO tables on ${{ matrix.os }}" || echo "No changes to commit"
+          git commit -m "[skip ci] Auto-check NGIO tables" || echo "No changes to commit"
           git push
 
   finalize-and-pr:

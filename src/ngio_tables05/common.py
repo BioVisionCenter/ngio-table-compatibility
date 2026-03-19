@@ -3,9 +3,6 @@ import pandas as pd
 from pydantic import BaseModel
 from pathlib import Path
 from argparse import ArgumentParser
-import platform
-
-CURRENT_OS = platform.system().lower()
 
 def parse_args():
     parser = ArgumentParser(description="Create sample NGIO tables.")
@@ -67,9 +64,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> None | str:
 
 class TableCheckResult(BaseModel):
     reader: str
-    reader_os: str
     writer: str
-    writer_os: str
     backend: Literal["anndata", "json", "csv", "parquet"] | str
     table_type: Literal["feature_table", "roi_table", "masking_roi_table", "condition_table"] | str
     status: Literal["success", "failure"]

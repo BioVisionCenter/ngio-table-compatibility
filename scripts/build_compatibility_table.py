@@ -2,10 +2,7 @@
 import polars as pl
 from pathlib import Path
 
-import polars as pl
-from typing import Union
-
-def value_to_indicator(v: Union[int, float, str]) -> str:
+def value_to_indicator(v: int | float | str) -> str:
     """
     Map numeric value to indicator:
     - 100 -> ✅
@@ -80,7 +77,7 @@ def df_to_compat_markdown(
     return markdown
 
 def main():
-    all_csv = Path('./tables/').glob('*.csv')
+    all_csv = Path('.').glob('check_results.csv')
 
     df_list = []
     for csv_file in all_csv:
