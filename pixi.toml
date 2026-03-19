@@ -10,6 +10,14 @@ version = "0.1.0"
 python = "==3.13"
 notebook = "*"
 
+# Ngio 0.2 Environment
+[feature.ngio02.pypi-dependencies]
+ngio = ">=0.2,<0.3"
+
+[feature.ngio02.tasks]
+ngio02_create = { cmd = "python -m ngio_tables02 --dir ./tables --mode create", env = { PYTHONPATH = "src" } }
+ngio02_check = { cmd = "python -m ngio_tables02 --dir ./tables --mode check", env = { PYTHONPATH = "src" } }
+
 # Ngio 0.4 Environment
 [feature.ngio04.pypi-dependencies]
 ngio = ">=0.4,<0.5"
@@ -30,6 +38,7 @@ update-readme = "python scripts/build_compatibility_table.py"
 # Environment definitions
 [environments]
 default = ["py13"]
+ngio02 = ["py13", "ngio02"]
 ngio04 = ["py13", "ngio04"]
 ngio05 = ["py13", "ngio05"]
 
@@ -37,11 +46,13 @@ ngio05 = ["py13", "ngio05"]
 check-success-ratio = "python scripts/check_success_ratio.py"
 
 create-tables = [
+    { task = "ngio02_create", env = "ngio02" },
     { task = "ngio04_create", env = "ngio04" },
     { task = "ngio05_create", env = "ngio05" },
 ]
 
 check-tables = [
+    { task = "ngio02_check", env = "ngio02" },
     { task = "ngio04_check", env = "ngio04" },
     { task = "ngio05_check", env = "ngio05" },
 ]

@@ -1,7 +1,7 @@
 import csv
 import sys
 
-EXPECTED_FAILURES = 12  # baseline from check_results.csv as of 2026-03-19
+EXPECTED_FAILURES = 15  # baseline from check_results.csv as of 2026-03-19
 
 
 def main():

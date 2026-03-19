@@ -1,4 +1,16 @@
 reader,writer,backend,table_type,status,details
+ngio02,ngio04,anndata,feature_table,success,
+ngio02,ngio04,anndata,roi_table,success,
+ngio02,ngio04,anndata,masking_roi_table,success,
+ngio02,ngio02,anndata,feature_table,success,
+ngio02,ngio02,anndata,roi_table,success,
+ngio02,ngio02,anndata,masking_roi_table,success,
+ngio02,ngio05_v3,anndata,feature_table,failure,Failed to read table with error: Could not load table from any known version. Errors: {'generic': KeyError('obs')}
+ngio02,ngio05_v3,anndata,roi_table,failure,Failed to read table with error: Could not load table from any known version. Errors: {'generic': KeyError('obs')}
+ngio02,ngio05_v3,anndata,masking_roi_table,failure,Failed to read table with error: Could not load table from any known version. Errors: {'generic': KeyError('obs')}
+ngio02,ngio05_v2,anndata,feature_table,success,
+ngio02,ngio05_v2,anndata,roi_table,success,
+ngio02,ngio05_v2,anndata,masking_roi_table,success,
 ngio04,ngio04,anndata,feature_table,success,
 ngio04,ngio04,anndata,roi_table,success,
 ngio04,ngio04,anndata,masking_roi_table,success,
@@ -11,9 +23,12 @@ ngio04,ngio04,csv,masking_roi_table,success,
 ngio04,ngio04,parquet,feature_table,success,
 ngio04,ngio04,parquet,roi_table,success,
 ngio04,ngio04,parquet,masking_roi_table,success,
-ngio04,ngio05_v3,anndata,feature_table,failure,Failed to read table with error: No Zarr group found at /Users/locerr/Projects/ngio-table-compatibility/tables/ngio05_v3/anndata/feature_table.zarr
-ngio04,ngio05_v3,anndata,roi_table,failure,Failed to read table with error: No Zarr group found at /Users/locerr/Projects/ngio-table-compatibility/tables/ngio05_v3/anndata/roi_table.zarr
-ngio04,ngio05_v3,anndata,masking_roi_table,failure,Failed to read table with error: No Zarr group found at /Users/locerr/Projects/ngio-table-compatibility/tables/ngio05_v3/anndata/masking_roi_table.zarr
+ngio04,ngio02,anndata,feature_table,success,
+ngio04,ngio02,anndata,roi_table,success,
+ngio04,ngio02,anndata,masking_roi_table,success,
+ngio04,ngio05_v3,anndata,feature_table,failure,Failed to read table with error: Expected table type feature_table but got generic_table
+ngio04,ngio05_v3,anndata,roi_table,failure,Failed to read table with error: Expected table type roi_table but got generic_table
+ngio04,ngio05_v3,anndata,masking_roi_table,failure,Failed to read table with error: Expected table type masking_roi_table but got generic_table
 ngio04,ngio05_v3,json,feature_table,failure,Failed to read table with error: No Zarr group found at /Users/locerr/Projects/ngio-table-compatibility/tables/ngio05_v3/json/feature_table.zarr
 ngio04,ngio05_v3,json,roi_table,failure,Failed to read table with error: No Zarr group found at /Users/locerr/Projects/ngio-table-compatibility/tables/ngio05_v3/json/roi_table.zarr
 ngio04,ngio05_v3,json,masking_roi_table,failure,Failed to read table with error: No Zarr group found at /Users/locerr/Projects/ngio-table-compatibility/tables/ngio05_v3/json/masking_roi_table.zarr
@@ -47,6 +62,9 @@ ngio05_v3,ngio04,csv,masking_roi_table,success,
 ngio05_v3,ngio04,parquet,feature_table,success,
 ngio05_v3,ngio04,parquet,roi_table,success,
 ngio05_v3,ngio04,parquet,masking_roi_table,success,
+ngio05_v3,ngio02,anndata,feature_table,success,
+ngio05_v3,ngio02,anndata,roi_table,success,
+ngio05_v3,ngio02,anndata,masking_roi_table,success,
 ngio05_v3,ngio05_v3,anndata,feature_table,success,
 ngio05_v3,ngio05_v3,anndata,roi_table,success,
 ngio05_v3,ngio05_v3,anndata,masking_roi_table,success,
@@ -83,6 +101,9 @@ ngio05_v2,ngio04,csv,masking_roi_table,success,
 ngio05_v2,ngio04,parquet,feature_table,success,
 ngio05_v2,ngio04,parquet,roi_table,success,
 ngio05_v2,ngio04,parquet,masking_roi_table,success,
+ngio05_v2,ngio02,anndata,feature_table,success,
+ngio05_v2,ngio02,anndata,roi_table,success,
+ngio05_v2,ngio02,anndata,masking_roi_table,success,
 ngio05_v2,ngio05_v3,anndata,feature_table,success,
 ngio05_v2,ngio05_v3,anndata,roi_table,success,
 ngio05_v2,ngio05_v3,anndata,masking_roi_table,success,

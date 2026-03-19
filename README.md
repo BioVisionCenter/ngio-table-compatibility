@@ -5,8 +5,9 @@ This repository maintains a compatibility table for different versions of the `n
 
 ## Compatibility Table
 
-| Reader \ Writer | ngio04 | ngio05_v2 | ngio05_v3 |
-| --------------- | ------ | --------- | --------- |
-| ngio04 | ✅ | ✅ | ❌ |
-| ngio05_v2 | ✅ | ✅ | ✅ |
-| ngio05_v3 | ✅ | ✅ | ✅ |
+| Reader \ Writer | ngio02 | ngio04 | ngio05_v2 | ngio05_v3 |
+| --------------- | ------ | ------ | --------- | --------- |
+| ngio02 | ✅ | ✅ | ✅ | ❌ |
+| ngio04 | ✅ | ✅ | ✅ | ❌ |
+| ngio05_v2 | ✅ | ✅ | ✅ | ✅ |
+| ngio05_v3 | ✅ | ✅ | ✅ | ✅ |

@@ -124,8 +124,10 @@ def ngio_table_validate(args, current_lib: str):
     results = []
     for base_pp in base:
         for backend in ["anndata", "json", "csv", "parquet"]:
+            dir_path = base_pp / f"{backend}"
+            if not dir_path.exists():
+                continue
             for testing_function in [check_sample_feature_table, check_sample_roi_table, check_sample_masking_roi_table]:
-                dir_path = base_pp / f"{backend}"
                 current_result = testing_function(dir_path, current_lib=current_lib)
                 results.append(current_result)
 
