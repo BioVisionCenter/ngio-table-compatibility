@@ -23,6 +23,9 @@ jobs:
           pixi-version: v0.59.0
           cache: false
 
+      - name: Clean previous results
+        run: rm -f check_results.csv
+
       - name: Create tables
         run: pixi run create-tables
 
