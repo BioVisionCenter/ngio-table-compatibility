@@ -24,9 +24,7 @@ ngio04_check = "python scripts/ngio04.py --dir ./tables --mode check"
 
 # Ngio 0.5 Environment
 [feature.ngio05.pypi-dependencies]
-ngio = "==0.5.0b3"
-# Debugging with local version of ngio
-# ngio = { path = "../ngio", editable = true }
+ngio = ">=0.5,<0.6"
 
 [feature.ngio05.tasks]
 ngio05_create = "python scripts/ngio05.py --dir ./tables --mode create"
