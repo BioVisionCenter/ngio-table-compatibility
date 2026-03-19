@@ -1,0 +1,37 @@
+{
+    "label": [
+        1,
+        2,
+        3
+    ],
+    "len_x_micrometer": [
+        1.0,
+        2.5,
+        3.2
+    ],
+    "len_y_micrometer": [
+        1.5,
+        2.0,
+        3.5
+    ],
+    "len_z_micrometer": [
+        0.5,
+        1.0,
+        1.7
+    ],
+    "x_micrometer": [
+        5.0,
+        15.5,
+        25.2
+    ],
+    "y_micrometer": [
+        10.0,
+        20.5,
+        30.2
+    ],
+    "z_micrometer": [
+        2.0,
+        7.5,
+        12.2
+    ]
+}
