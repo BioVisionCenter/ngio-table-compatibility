@@ -10,32 +10,26 @@ version = "0.1.0"
 python = "==3.13"
 notebook = "*"
 
-# Fractal Task Core
-[feature.fractal-tasks-core.pypi-dependencies]
-fractal-tasks-core = ">=1.5.0,<2.0.0"
-
 # Ngio 0.4 Environment
 [feature.ngio04.pypi-dependencies]
 ngio = ">=0.4,<0.5"
 
 [feature.ngio04.tasks]
-ngio04_create = "python scripts/ngio04.py --dir ./tables --mode create"
-ngio04_check = "python scripts/ngio04.py --dir ./tables --mode check"
+ngio04_create = { cmd = "python -m ngio_tables04 --dir ./tables --mode create", env = { PYTHONPATH = "src" } }
+ngio04_check = { cmd = "python -m ngio_tables04 --dir ./tables --mode check", env = { PYTHONPATH = "src" } }
 
 # Ngio 0.5 Environment
 [feature.ngio05.pypi-dependencies]
 ngio = ">=0.5,<0.6"
 
 [feature.ngio05.tasks]
-ngio05_create = "python scripts/ngio05.py --dir ./tables --mode create"
-ngio05_check = "python scripts/ngio05.py --dir ./tables --mode check"
+ngio05_create = { cmd = "python -m ngio_tables05 --dir ./tables --mode create", env = { PYTHONPATH = "src" } }
+ngio05_check = { cmd = "python -m ngio_tables05 --dir ./tables --mode check", env = { PYTHONPATH = "src" } }
 update-readme = "python scripts/build_compatibility_table.py"
 
 # Environment definitions
 [environments]
-# Dev environments
 default = ["py13"]
-task-core = ["py13", "fractal-tasks-core"]
 ngio04 = ["py13", "ngio04"]
 ngio05 = ["py13", "ngio05"]
 

@@ -63,8 +63,8 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> None | str:
         return None
     except Exception as e:
         return str(e)
-    
-    
+
+
 class TableCheckResult(BaseModel):
     reader: str
     reader_os: str
@@ -74,8 +74,8 @@ class TableCheckResult(BaseModel):
     table_type: Literal["feature_table", "roi_table", "masking_roi_table", "condition_table"] | str
     status: Literal["success", "failure"]
     details: str = ""
-    
-    
+
+
 def save_results_to_csv(results: list[TableCheckResult], output_path: Path) -> None:
     results_df = pd.DataFrame([r.model_dump() for r in results])
     output_path.parent.mkdir(parents=True, exist_ok=True)
